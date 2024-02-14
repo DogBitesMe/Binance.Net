@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Collections.Generic;
+using CryptoExchange.Net.Converters;
+using Newtonsoft.Json;
 
 namespace Binance.Net.Objects.Models.Spot.Lending
 {
@@ -14,8 +17,12 @@ namespace Binance.Net.Objects.Models.Spot.Lending
         /// <summary>
         /// Average annual interest rage
         /// </summary>
-        [JsonProperty("avgAnnualInterestRate")]
-        public decimal AverageAnnualInterestRate { get; set; }
+        [JsonProperty("latestAnnualPercentageRate")]
+        public decimal LatestAnnualInterestRate { get; set; }
+
+        public Dictionary<string, decimal> TierAnnualPercentageRate { get; set; }
+
+        public decimal AirDropPercentageRate { get; set; }
         /// <summary>
         /// Can purchase
         /// </summary>
@@ -24,14 +31,13 @@ namespace Binance.Net.Objects.Models.Spot.Lending
         /// Can redeem
         /// </summary>
         public bool CanRedeem { get; set; }
+
         /// <summary>
-        /// Daily interest per thousand
+        /// Is sold out
         /// </summary>
-        public decimal DailyInterestPerThousand { get; set; }
-        /// <summary>
-        /// Is featured
-        /// </summary>
-        public bool Featured { get; set; }
+        public bool IsSoldOut { get; set; }
+
+        public bool Hot { get; set; }
         /// <summary>
         /// Minimal quantity to purchase
         /// </summary>
@@ -41,24 +47,20 @@ namespace Binance.Net.Objects.Models.Spot.Lending
         /// Product id
         /// </summary>
         public string ProductId { get; set; } = string.Empty;
-        /// <summary>
-        /// Purchased quantity
-        /// </summary>
-        [JsonProperty("purchasedAmount")]
-        public decimal PurchasedQuantity { get; set; }
+
+        [JsonConverter(typeof(DateTimeConverter))]
+        public DateTime SubscriptionStartTime { get; set; }
+
         /// <summary>
         /// Status of the product
         /// </summary>
         public string Status { get; set; } = string.Empty;
-        /// <summary>
-        /// Upper limit
-        /// </summary>
-        [JsonProperty("upLimit")]
-        public decimal UpperLimit { get; set; }
-        /// <summary>
-        /// Upper limit per user
-        /// </summary>
-        [JsonProperty("upLimitPerUser")]
-        public decimal UpperLimitPerUser { get; set; }
+        
+    }
+
+    public class BinanceSavingsProductList
+    {
+        public int Total { get; set; }
+        public List<BinanceSavingsProduct> Rows { get; set; } = new List<BinanceSavingsProduct>();
     }
 }

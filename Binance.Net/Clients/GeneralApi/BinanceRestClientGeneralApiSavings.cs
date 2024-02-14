@@ -19,7 +19,7 @@ namespace Binance.Net.Clients.GeneralApi
     public class BinanceRestClientGeneralApiSavings : IBinanceRestClientGeneralApiSavings
     {
         // Savings
-        private const string flexibleProductListEndpoint = "lending/daily/product/list";
+        private const string flexibleProductListEndpoint = "simple-earn/flexible/list";
         private const string leftDailyPurchaseQuotaEndpoint = "lending/daily/userLeftQuota";
         private const string purchaseFlexibleProductEndpoint = "lending/daily/purchase";
         private const string leftDailyRedemptionQuotaEndpoint = "lending/daily/userRedemptionQuota";
@@ -43,17 +43,15 @@ namespace Binance.Net.Clients.GeneralApi
 
         #region Get Flexible Product List
         /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BinanceSavingsProduct>>> GetFlexibleProductListAsync(ProductStatus? status = null, string asset = null, bool? featured = null, int? page = null, int? pageSize = null, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BinanceSavingsProductList>> GetFlexibleProductListAsync(string asset = null, int? page = null, int? pageSize = null, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("status", status == null ? null : JsonConvert.SerializeObject(status, new ProductStatusConverter(false)));
             parameters.AddOptionalParameter("asset", asset);
-            parameters.AddOptionalParameter("featured", featured == true ? "TRUE" : "ALL");
             parameters.AddOptionalParameter("current", page?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("size", pageSize?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("recvWindow", receiveWindow?.ToString(CultureInfo.InvariantCulture) ?? _baseClient.ClientOptions.ReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
 
-            return await _baseClient.SendRequestInternal<IEnumerable<BinanceSavingsProduct>>(_baseClient.GetUrl(flexibleProductListEndpoint, "sapi", "1"), HttpMethod.Get, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestInternal<BinanceSavingsProductList>(_baseClient.GetUrl(flexibleProductListEndpoint, "sapi", "1"), HttpMethod.Get, ct, parameters, true).ConfigureAwait(false);
         }
 
         #endregion
