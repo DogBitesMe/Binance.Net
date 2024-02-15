@@ -8,6 +8,7 @@ using Binance.Net.Converters;
 using Binance.Net.Enums;
 using Binance.Net.Interfaces.Clients.GeneralApi;
 using Binance.Net.Objects.Models.Spot.Lending;
+using Binance.Net.Objects.Models.Spot.Savings;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Converters;
 using CryptoExchange.Net.Objects;
@@ -18,13 +19,16 @@ namespace Binance.Net.Clients.GeneralApi
     /// <inheritdoc />
     public class BinanceRestClientGeneralApiSavings : IBinanceRestClientGeneralApiSavings
     {
-        // Savings
+        // Savings(Simple-Earn)
         private const string flexibleProductListEndpoint = "simple-earn/flexible/list";
-        private const string leftDailyPurchaseQuotaEndpoint = "lending/daily/userLeftQuota";
-        private const string purchaseFlexibleProductEndpoint = "lending/daily/purchase";
+        private const string subscribeFlexibleProductListEndpoint = "simple-earn/flexible/subscribe";
+        private const string redeemFlexibleProductEndpoint = "simple-earn/flexible/redeem";
+        private const string getFlexiblePersonalLeftQuotaEndpoint = "simple-earn/flexible/personalLeftQuota";
+        private const string getFlexibleProductPositionEndpoint = "simple-earn/flexible/position";
+
         private const string leftDailyRedemptionQuotaEndpoint = "lending/daily/userRedemptionQuota";
-        private const string redeemFlexibleProductEndpoint = "lending/daily/redeem";
-        private const string flexiblePositionEndpoint = "lending/daily/token/position";
+        
+        
         private const string fixedAndCustomizedFixedProjectListEndpoint = "lending/project/list";
         private const string purchaseCustomizedFixedProjectEndpoint = "lending/customizedFixed/purchase";
         private const string fixedAndCustomizedProjectPositionEndpoint = "lending/project/position/list";
@@ -43,7 +47,7 @@ namespace Binance.Net.Clients.GeneralApi
 
         #region Get Flexible Product List
         /// <inheritdoc />
-        public async Task<WebCallResult<BinanceSavingsProductList>> GetFlexibleProductListAsync(string asset = null, int? page = null, int? pageSize = null, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BinanceFlexibleProductList>> GetFlexibleProductListAsync(string asset = null, int? page = null, int? pageSize = null, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("asset", asset);
@@ -51,14 +55,42 @@ namespace Binance.Net.Clients.GeneralApi
             parameters.AddOptionalParameter("size", pageSize?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("recvWindow", receiveWindow?.ToString(CultureInfo.InvariantCulture) ?? _baseClient.ClientOptions.ReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
 
-            return await _baseClient.SendRequestInternal<BinanceSavingsProductList>(_baseClient.GetUrl(flexibleProductListEndpoint, "sapi", "1"), HttpMethod.Get, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestInternal<BinanceFlexibleProductList>(_baseClient.GetUrl(flexibleProductListEndpoint, "sapi", "1"), HttpMethod.Get, ct, parameters, true).ConfigureAwait(false);
         }
 
         #endregion
 
-        #region Get Left Daily Purchase Quota of Flexible Product
+        #region Subscribe Flexible Product
+
         /// <inheritdoc />
-        public async Task<WebCallResult<BinancePurchaseQuotaLeft>> GetLeftDailyPurchaseQuotaOfFlexableProductAsync(string productId, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BinanceSimpleEarnPurchaseResult>> SubscribeFlexibleProductAsync(string productId,
+            decimal quantity, bool? autoSubscribe, SourceAccount? sourceAccount, long? receiveWindow = null, CancellationToken ct = default)
+        {
+            productId.ValidateNotNull(nameof(productId));
+
+            var parameters = new Dictionary<string, object>
+            {
+                { "productId", productId },
+                { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
+            };
+            parameters.AddOptionalParameter("autoSubscribe", autoSubscribe?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("sourceAccount", sourceAccount?.ToString(CultureInfo.InvariantCulture));
+
+            parameters.AddOptionalParameter("recvWindow",
+                receiveWindow?.ToString(CultureInfo.InvariantCulture) ??
+                _baseClient.ClientOptions.ReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
+
+            return await _baseClient
+                .SendRequestInternal<BinanceSimpleEarnPurchaseResult>(
+                    _baseClient.GetUrl(subscribeFlexibleProductListEndpoint, "sapi", "1"), HttpMethod.Post, ct, parameters,
+                    true).ConfigureAwait(false);
+        }
+
+        #endregion
+
+        #region Get Flexible Personal Left Quota
+        /// <inheritdoc />
+        public async Task<WebCallResult<BinanceFlexiblePersonalQuotaLeft>> GetFlexiblePersonalLeftQuotaAsync(string productId, long? receiveWindow = null, CancellationToken ct = default)
         {
             productId.ValidateNotNull(nameof(productId));
 
@@ -68,27 +100,12 @@ namespace Binance.Net.Clients.GeneralApi
             };
             parameters.AddOptionalParameter("recvWindow", receiveWindow?.ToString(CultureInfo.InvariantCulture) ?? _baseClient.ClientOptions.ReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
 
-            return await _baseClient.SendRequestInternal<BinancePurchaseQuotaLeft>(_baseClient.GetUrl(leftDailyPurchaseQuotaEndpoint, "sapi", "1"), HttpMethod.Get, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestInternal<BinanceFlexiblePersonalQuotaLeft>(_baseClient.GetUrl(
+                getFlexiblePersonalLeftQuotaEndpoint, "sapi", "1"), HttpMethod.Get, ct, parameters, true).ConfigureAwait(false);
         }
 
         #endregion
 
-        #region Purchase Flexible Product
-        /// <inheritdoc />
-        public async Task<WebCallResult<BinanceLendingPurchaseResult>> PurchaseFlexibleProductAsync(string productId, decimal quantity, long? receiveWindow = null, CancellationToken ct = default)
-        {
-            productId.ValidateNotNull(nameof(productId));
-
-            var parameters = new Dictionary<string, object>
-            {
-                { "productId", productId },
-                { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
-            };
-            parameters.AddOptionalParameter("recvWindow", receiveWindow?.ToString(CultureInfo.InvariantCulture) ?? _baseClient.ClientOptions.ReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
-
-            return await _baseClient.SendRequestInternal<BinanceLendingPurchaseResult>(_baseClient.GetUrl(purchaseFlexibleProductEndpoint, "sapi", "1"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
-        }
-        #endregion
 
         #region Get Left Daily Redemption Quota of Flexible Product
         /// <inheritdoc />
@@ -109,25 +126,28 @@ namespace Binance.Net.Clients.GeneralApi
 
         #region Redeem Flexible Product
         /// <inheritdoc />
-        public async Task<WebCallResult<object>> RedeemFlexibleProductAsync(string productId, decimal quantity, RedeemType type, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<RedeemProductResult>> RedeemFlexibleProductAsync(string productId, decimal quantity,
+            bool? redeemAll, SourceAccount?
+                destAccount, long? receiveWindow = null, CancellationToken ct = default)
         {
             productId.ValidateNotNull(nameof(productId));
 
             var parameters = new Dictionary<string, object>
             {
                 { "productId", productId },
-                { "type", JsonConvert.SerializeObject(type, new RedeemTypeConverter(false)) },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
             };
+            parameters.AddOptionalParameter("redeemAll", redeemAll?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("destAccount", destAccount?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("recvWindow", receiveWindow?.ToString(CultureInfo.InvariantCulture) ?? _baseClient.ClientOptions.ReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
 
-            return await _baseClient.SendRequestInternal<object>(_baseClient.GetUrl(redeemFlexibleProductEndpoint, "sapi", "1"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestInternal<RedeemProductResult>(_baseClient.GetUrl(redeemFlexibleProductEndpoint, "sapi", "1"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
         #endregion
 
         #region Get Flexible Product Position
         /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BinanceFlexibleProductPosition>>> GetFlexibleProductPositionAsync(string? asset = null, string? productId = null, int? page = null, int? pageSize = null, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BinanceFlexibleProductPositionList>> GetFlexibleProductPositionAsync(string? asset = null, string? productId = null, int? page = null, int? pageSize = null, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("asset", asset);
@@ -136,7 +156,8 @@ namespace Binance.Net.Clients.GeneralApi
             parameters.AddOptionalParameter("size", pageSize?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("recvWindow", receiveWindow?.ToString(CultureInfo.InvariantCulture) ?? _baseClient.ClientOptions.ReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
 
-            return await _baseClient.SendRequestInternal<IEnumerable<BinanceFlexibleProductPosition>>(_baseClient.GetUrl(flexiblePositionEndpoint, "sapi", "1"), HttpMethod.Get, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestInternal<BinanceFlexibleProductPositionList>(_baseClient.GetUrl(
+                getFlexibleProductPositionEndpoint, "sapi", "1"), HttpMethod.Get, ct, parameters, true).ConfigureAwait(false);
         }
         #endregion
 

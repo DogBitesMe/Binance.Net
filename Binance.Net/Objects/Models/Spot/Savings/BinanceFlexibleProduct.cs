@@ -8,7 +8,7 @@ namespace Binance.Net.Objects.Models.Spot.Lending
     /// <summary>
     /// Savings product
     /// </summary>
-    public class BinanceSavingsProduct
+    public class BinanceFlexibleProduct
     {
         /// <summary>
         /// The asset
@@ -42,7 +42,7 @@ namespace Binance.Net.Objects.Models.Spot.Lending
         /// Minimal quantity to purchase
         /// </summary>
         [JsonProperty("minPurchaseAmount")]
-        public decimal MinimalPurchaseQuantity { get; set; }
+        public decimal MinimalPurchaseAmount { get; set; }
         /// <summary>
         /// Product id
         /// </summary>
@@ -58,9 +58,9 @@ namespace Binance.Net.Objects.Models.Spot.Lending
         
     }
 
-    public class BinanceSavingsProductList
+    public class BinanceFlexibleProductList
     {
         public int Total { get; set; }
-        public List<BinanceSavingsProduct> Rows { get; set; } = new List<BinanceSavingsProduct>();
+        public List<BinanceFlexibleProduct> Rows { get; set; } = new List<BinanceFlexibleProduct>();
     }
 }

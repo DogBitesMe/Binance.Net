@@ -4,10 +4,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using Binance.Net.Enums;
 using Binance.Net.Objects.Models.Spot.Lending;
+using Binance.Net.Objects.Models.Spot.Savings;
 using CryptoExchange.Net.Objects;
 
 namespace Binance.Net.Interfaces.Clients.GeneralApi
 {
+    public enum SourceAccount
+    {
+        SPOT,
+        FUND,
+        ALL
+    }
+
+    public class RedeemProductResult
+    {
+        public string RedeemId { get; set; }
+        public bool Success { get; set; }
+    }
+
     /// <summary>
     /// Binance Spot Savings endpoints
     /// </summary>
@@ -24,7 +38,7 @@ namespace Binance.Net.Interfaces.Clients.GeneralApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>List of product</returns>
-        Task<WebCallResult<BinanceSavingsProductList>> GetFlexibleProductListAsync(string asset = null, int? page = null, int? pageSize = null, long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<BinanceFlexibleProductList>> GetFlexibleProductListAsync(string asset = null, int? page = null, int? pageSize = null, long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get the purchase quota left for a product
@@ -34,18 +48,13 @@ namespace Binance.Net.Interfaces.Clients.GeneralApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Quota left</returns>
-        Task<WebCallResult<BinancePurchaseQuotaLeft>> GetLeftDailyPurchaseQuotaOfFlexableProductAsync(string productId, long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<BinanceFlexiblePersonalQuotaLeft>> GetFlexiblePersonalLeftQuotaAsync(string productId, long? receiveWindow = null, CancellationToken ct = default);
 
-        /// <summary>
-        /// Purchase flexible product
-        /// <para><a href="https://binance-docs.github.io/apidocs/spot/en/#purchase-flexible-product-user_data" /></para>
-        /// </summary>
-        /// <param name="productId">Id of the product</param>
-        /// <param name="quantity">The quantity to purchase</param>
-        /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns>Purchase id</returns>
-        Task<WebCallResult<BinanceLendingPurchaseResult>> PurchaseFlexibleProductAsync(string productId, decimal quantity, long? receiveWindow = null, CancellationToken ct = default);
+        
+
+
+        Task<WebCallResult<BinanceSimpleEarnPurchaseResult>> SubscribeFlexibleProductAsync(string productId,
+            decimal quantity, bool? autoSubscribe, SourceAccount? sourceAccount, long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get the redemption quota left for a product
@@ -63,12 +72,13 @@ namespace Binance.Net.Interfaces.Clients.GeneralApi
         /// <para><a href="https://binance-docs.github.io/apidocs/spot/en/#redeem-flexible-product-user_data" /></para>
         /// </summary>
         /// <param name="productId">Id of the product</param>
-        /// <param name="type">Redeem type</param>
+        /// <param name="redeemAll">Redeem all</param>
         /// <param name="quantity">The quantity to redeem</param>
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<object>> RedeemFlexibleProductAsync(string productId, decimal quantity, RedeemType type, long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<RedeemProductResult>> RedeemFlexibleProductAsync(string productId, decimal quantity, bool? redeemAll, SourceAccount?
+            destAccount, long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get flexible product position
@@ -80,7 +90,7 @@ namespace Binance.Net.Interfaces.Clients.GeneralApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Flexible product position(s)</returns>
-        Task<WebCallResult<IEnumerable<BinanceFlexibleProductPosition>>> GetFlexibleProductPositionAsync(string? asset = null, string? productId = null, int? page = null, int? pageSize = null, long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<BinanceFlexibleProductPositionList>> GetFlexibleProductPositionAsync(string? asset = null, string? productId = null, int? page = null, int? pageSize = null, long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get fixed and customized fixed project list

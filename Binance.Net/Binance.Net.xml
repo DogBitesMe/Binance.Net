@@ -853,16 +853,16 @@
         <member name="M:Binance.Net.Clients.GeneralApi.BinanceRestClientGeneralApiSavings.GetFlexibleProductListAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int64},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Binance.Net.Clients.GeneralApi.BinanceRestClientGeneralApiSavings.GetLeftDailyPurchaseQuotaOfFlexableProductAsync(System.String,System.Nullable{System.Int64},System.Threading.CancellationToken)">
+        <member name="M:Binance.Net.Clients.GeneralApi.BinanceRestClientGeneralApiSavings.SubscribeFlexibleProductAsync(System.String,System.Decimal,System.Nullable{System.Boolean},System.Nullable{Binance.Net.Interfaces.Clients.GeneralApi.SourceAccount},System.Nullable{System.Int64},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Binance.Net.Clients.GeneralApi.BinanceRestClientGeneralApiSavings.PurchaseFlexibleProductAsync(System.String,System.Decimal,System.Nullable{System.Int64},System.Threading.CancellationToken)">
+        <member name="M:Binance.Net.Clients.GeneralApi.BinanceRestClientGeneralApiSavings.GetFlexiblePersonalLeftQuotaAsync(System.String,System.Nullable{System.Int64},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Binance.Net.Clients.GeneralApi.BinanceRestClientGeneralApiSavings.GetLeftDailyRedemptionQuotaOfFlexibleProductAsync(System.String,Binance.Net.Enums.RedeemType,System.Nullable{System.Int64},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Binance.Net.Clients.GeneralApi.BinanceRestClientGeneralApiSavings.RedeemFlexibleProductAsync(System.String,System.Decimal,Binance.Net.Enums.RedeemType,System.Nullable{System.Int64},System.Threading.CancellationToken)">
+        <member name="M:Binance.Net.Clients.GeneralApi.BinanceRestClientGeneralApiSavings.RedeemFlexibleProductAsync(System.String,System.Decimal,System.Nullable{System.Boolean},System.Nullable{Binance.Net.Interfaces.Clients.GeneralApi.SourceAccount},System.Nullable{System.Int64},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Binance.Net.Clients.GeneralApi.BinanceRestClientGeneralApiSavings.GetFlexibleProductPositionAsync(System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int64},System.Threading.CancellationToken)">
@@ -6958,7 +6958,7 @@
             <param name="ct">Cancellation token</param>
             <returns>List of product</returns>
         </member>
-        <member name="M:Binance.Net.Interfaces.Clients.GeneralApi.IBinanceRestClientGeneralApiSavings.GetLeftDailyPurchaseQuotaOfFlexableProductAsync(System.String,System.Nullable{System.Int64},System.Threading.CancellationToken)">
+        <member name="M:Binance.Net.Interfaces.Clients.GeneralApi.IBinanceRestClientGeneralApiSavings.GetFlexiblePersonalLeftQuotaAsync(System.String,System.Nullable{System.Int64},System.Threading.CancellationToken)">
             <summary>
             Get the purchase quota left for a product
             <para><a href="https://binance-docs.github.io/apidocs/spot/en/#get-left-daily-purchase-quota-of-flexible-product-user_data" /></para>
@@ -6967,17 +6967,6 @@
             <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
             <param name="ct">Cancellation token</param>
             <returns>Quota left</returns>
-        </member>
-        <member name="M:Binance.Net.Interfaces.Clients.GeneralApi.IBinanceRestClientGeneralApiSavings.PurchaseFlexibleProductAsync(System.String,System.Decimal,System.Nullable{System.Int64},System.Threading.CancellationToken)">
-            <summary>
-            Purchase flexible product
-            <para><a href="https://binance-docs.github.io/apidocs/spot/en/#purchase-flexible-product-user_data" /></para>
-            </summary>
-            <param name="productId">Id of the product</param>
-            <param name="quantity">The quantity to purchase</param>
-            <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
-            <param name="ct">Cancellation token</param>
-            <returns>Purchase id</returns>
         </member>
         <member name="M:Binance.Net.Interfaces.Clients.GeneralApi.IBinanceRestClientGeneralApiSavings.GetLeftDailyRedemptionQuotaOfFlexibleProductAsync(System.String,Binance.Net.Enums.RedeemType,System.Nullable{System.Int64},System.Threading.CancellationToken)">
             <summary>
@@ -6990,13 +6979,13 @@
             <param name="ct">Cancellation token</param>
             <returns>Quota left</returns>
         </member>
-        <member name="M:Binance.Net.Interfaces.Clients.GeneralApi.IBinanceRestClientGeneralApiSavings.RedeemFlexibleProductAsync(System.String,System.Decimal,Binance.Net.Enums.RedeemType,System.Nullable{System.Int64},System.Threading.CancellationToken)">
+        <member name="M:Binance.Net.Interfaces.Clients.GeneralApi.IBinanceRestClientGeneralApiSavings.RedeemFlexibleProductAsync(System.String,System.Decimal,System.Nullable{System.Boolean},System.Nullable{Binance.Net.Interfaces.Clients.GeneralApi.SourceAccount},System.Nullable{System.Int64},System.Threading.CancellationToken)">
             <summary>
             Redeem flexible product
             <para><a href="https://binance-docs.github.io/apidocs/spot/en/#redeem-flexible-product-user_data" /></para>
             </summary>
             <param name="productId">Id of the product</param>
-            <param name="type">Redeem type</param>
+            <param name="redeemAll">Redeem all</param>
             <param name="quantity">The quantity to redeem</param>
             <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
             <param name="ct">Cancellation token</param>
@@ -21516,14 +21505,69 @@
             Type
             </summary>
         </member>
+        <member name="T:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexiblePersonalQuotaLeft">
+            <summary>
+            Purchase quota left
+            </summary>
+        </member>
+        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexiblePersonalQuotaLeft.LeftPersonalQuota">
+            <summary>
+            The quota left
+            </summary>
+        </member>
+        <member name="T:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProduct">
+            <summary>
+            Savings product
+            </summary>
+        </member>
+        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProduct.Asset">
+            <summary>
+            The asset
+            </summary>
+        </member>
+        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProduct.LatestAnnualInterestRate">
+            <summary>
+            Average annual interest rage
+            </summary>
+        </member>
+        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProduct.CanPurchase">
+            <summary>
+            Can purchase
+            </summary>
+        </member>
+        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProduct.CanRedeem">
+            <summary>
+            Can redeem
+            </summary>
+        </member>
+        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProduct.IsSoldOut">
+            <summary>
+            Is sold out
+            </summary>
+        </member>
+        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProduct.MinimalPurchaseAmount">
+            <summary>
+            Minimal quantity to purchase
+            </summary>
+        </member>
+        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProduct.ProductId">
+            <summary>
+            Product id
+            </summary>
+        </member>
+        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProduct.Status">
+            <summary>
+            Status of the product
+            </summary>
+        </member>
         <member name="T:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition">
             <summary>
             Flexible product position
             </summary>
         </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition.AnnualInterestRate">
+        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition.TotalAmount">
             <summary>
-            Annual interest rate
+            Total quantity
             </summary>
         </member>
         <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition.Asset">
@@ -21531,69 +21575,14 @@
             Asset
             </summary>
         </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition.AverageAnnualInterestRate">
-            <summary>
-            Average annual interest rate
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition.TierAnnualInterestRate">
-            <summary>
-            Tier Average annual interest rate
-            </summary>
-        </member>
         <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition.CanRedeem">
             <summary>
             Can redeem
             </summary>
         </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition.DailyInterestRate">
-            <summary>
-            Daily interest rate
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition.FreeQuantity">
-            <summary>
-            Quantity free
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition.FreezeQuantity">
-            <summary>
-            Quantity frozen
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition.LockedQuantity">
-            <summary>
-            Quantity locked
-            </summary>
-        </member>
         <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition.ProductId">
             <summary>
             The product id
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition.ProductName">
-            <summary>
-            The product name
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition.RedeemingQuantity">
-            <summary>
-            Redeeming quantity
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition.TodayPurchasedQuantity">
-            <summary>
-            Quantity purchased today
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition.TotalQuantity">
-            <summary>
-            Total quantity
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceFlexibleProductPosition.TotalInterest">
-            <summary>
-            Total interest
             </summary>
         </member>
         <member name="T:Binance.Net.Objects.Models.Spot.Lending.BinanceLendingInterestHistory">
@@ -21806,21 +21795,6 @@
             Has area limitation
             </summary>
         </member>
-        <member name="T:Binance.Net.Objects.Models.Spot.Lending.BinancePurchaseQuotaLeft">
-            <summary>
-            Purchase quota left
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinancePurchaseQuotaLeft.Asset">
-            <summary>
-            The asset
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinancePurchaseQuotaLeft.LeftQuota">
-            <summary>
-            The quota left
-            </summary>
-        </member>
         <member name="T:Binance.Net.Objects.Models.Spot.Lending.BinancePurchaseRecord">
             <summary>
             Purchase record
@@ -21944,51 +21918,6 @@
         <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceRedemptionRecord.Status">
             <summary>
             Purchase status
-            </summary>
-        </member>
-        <member name="T:Binance.Net.Objects.Models.Spot.Lending.BinanceSavingsProduct">
-            <summary>
-            Savings product
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceSavingsProduct.Asset">
-            <summary>
-            The asset
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceSavingsProduct.LatestAnnualInterestRate">
-            <summary>
-            Average annual interest rage
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceSavingsProduct.CanPurchase">
-            <summary>
-            Can purchase
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceSavingsProduct.CanRedeem">
-            <summary>
-            Can redeem
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceSavingsProduct.IsSoldOut">
-            <summary>
-            Is sold out
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceSavingsProduct.MinimalPurchaseQuantity">
-            <summary>
-            Minimal quantity to purchase
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceSavingsProduct.ProductId">
-            <summary>
-            Product id
-            </summary>
-        </member>
-        <member name="P:Binance.Net.Objects.Models.Spot.Lending.BinanceSavingsProduct.Status">
-            <summary>
-            Status of the product
             </summary>
         </member>
         <member name="T:Binance.Net.Objects.Models.Spot.Staking.BinanceBethRateHistory">

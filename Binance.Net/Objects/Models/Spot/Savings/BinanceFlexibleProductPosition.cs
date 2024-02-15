@@ -9,73 +9,47 @@ namespace Binance.Net.Objects.Models.Spot.Lending
     public class BinanceFlexibleProductPosition
     {
         /// <summary>
-        /// Annual interest rate
+        /// Total quantity
         /// </summary>
-        public decimal AnnualInterestRate { get; set; }
+        [JsonProperty("totalAmount")]
+        public decimal TotalAmount { get; set; }
+
+        public Dictionary<string, decimal> TierAnnualPercentageRate { get; set; } = new Dictionary<string, decimal>();
+        
+        public decimal LatestAnnualPercentageRate { get; set; }
+
+        public decimal YesterdayAirdropPercentageRate { get; set; }
+
         /// <summary>
         /// Asset
         /// </summary>
         public string Asset { get; set; } = string.Empty;
-        /// <summary>
-        /// Average annual interest rate
-        /// </summary>
-        [JsonProperty("avgAnnualInterestRate")]
-        public decimal AverageAnnualInterestRate { get; set; }
-        /// <summary>
-        /// Tier Average annual interest rate
-        /// </summary>
-        [JsonProperty("tierAnnualInterestRate")]
-        public Dictionary<string, decimal> TierAnnualInterestRate { get; set; } = new Dictionary<string, decimal>();
+
+        public string AirDropAsset { get; set; } = string.Empty;
+
         /// <summary>
         /// Can redeem
         /// </summary>
         public bool CanRedeem { get; set; }
-        /// <summary>
-        /// Daily interest rate
-        /// </summary>
-        public decimal DailyInterestRate { get; set; }
-        /// <summary>
-        /// Quantity free
-        /// </summary>
-        [JsonProperty("freeAmount")]
-        public decimal FreeQuantity { get; set; }
-        /// <summary>
-        /// Quantity frozen
-        /// </summary>
-        [JsonProperty("freezeAmount")]
-        public decimal FreezeQuantity { get; set; }
-        /// <summary>
-        /// Quantity locked
-        /// </summary>
-        [JsonProperty("lockedAmount")]
-        public decimal LockedQuantity { get; set; }
+
+        public decimal CollateralAmount { get; set; }
 
         /// <summary>
         /// The product id
         /// </summary>
         public string ProductId { get; set; } = string.Empty;
-        /// <summary>
-        /// The product name
-        /// </summary>
-        public string ProductName { get; set; } = string.Empty;
-        /// <summary>
-        /// Redeeming quantity
-        /// </summary>
-        [JsonProperty("redeemingAmount")]
-        public decimal RedeemingQuantity { get; set; }
-        /// <summary>
-        /// Quantity purchased today
-        /// </summary>
-        [JsonProperty("todayPurchasedAmount")]
-        public decimal TodayPurchasedQuantity { get; set; }
-        /// <summary>
-        /// Total quantity
-        /// </summary>
-        [JsonProperty("totalAmount")]
-        public decimal TotalQuantity { get; set; }
-        /// <summary>
-        /// Total interest
-        /// </summary>
-        public decimal TotalInterest { get; set; }
+
+public decimal YesterdayRealTimeRewards { get; set; }
+
+public decimal CumulativeBonusRewards { get; set; }
+public decimal CumulativeRealTimeRewards { get; set; }
+public decimal CumulativeTotalRewards { get; set; }
+        public bool AutoSubscribe { get; set; }
+    }
+
+    public class BinanceFlexibleProductPositionList
+    {
+        public int Total { get; set; }
+        public List<BinanceFlexibleProductPosition> Rows { get; set; } = new List<BinanceFlexibleProductPosition>();
     }
 }
