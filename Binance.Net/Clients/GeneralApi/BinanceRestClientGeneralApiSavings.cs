@@ -25,6 +25,8 @@ namespace Binance.Net.Clients.GeneralApi
         private const string redeemFlexibleProductEndpoint = "simple-earn/flexible/redeem";
         private const string getFlexiblePersonalLeftQuotaEndpoint = "simple-earn/flexible/personalLeftQuota";
         private const string getFlexibleProductPositionEndpoint = "simple-earn/flexible/position";
+        private const string getFlexibleSubscriptionRecordEndpoint = "simple-earn/flexible/history/subscriptionRecord";
+        private const string getFlexibleRedemptionRecordEndpoint = "simple-earn/flexible/history/redemptionRecord";
 
         private const string leftDailyRedemptionQuotaEndpoint = "lending/daily/userRedemptionQuota";
         
@@ -160,6 +162,47 @@ namespace Binance.Net.Clients.GeneralApi
                 getFlexibleProductPositionEndpoint, "sapi", "1"), HttpMethod.Get, ct, parameters, true).ConfigureAwait(false);
         }
         #endregion
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<SubscriptionRecordList>> GetFlexibleSubscriptionRecordAsync(
+            string? productId, string? purchaseId, string? asset, DateTime? startTime, DateTime? endTime, int? current,
+            int? size, long? receiveWindow = null, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("productId", productId);
+            parameters.AddOptionalParameter("purchaseId", purchaseId);
+            parameters.AddOptionalParameter("asset", asset);
+            parameters.AddOptionalParameter("startTime", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.AddOptionalParameter("endTime", DateTimeConverter.ConvertToMilliseconds(endTime));
+            parameters.AddOptionalParameter("current", current?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("size", size?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("recvWindow", receiveWindow?.ToString(CultureInfo.InvariantCulture) ?? _baseClient.ClientOptions.ReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
+
+            return await _baseClient.SendRequestInternal<SubscriptionRecordList>(_baseClient.GetUrl(
+                getFlexibleSubscriptionRecordEndpoint, "sapi", "1"), HttpMethod.Get, ct, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<RedemptionRecordList>> GetFlexibleRedemptionRecordAsync(string? productId,
+            string? redeemId, string? asset, DateTime? startTime, DateTime? endTime, int? current, int? size,
+            long? receiveWindow = null, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("productId", productId);
+            parameters.AddOptionalParameter("redeemId", redeemId);
+            parameters.AddOptionalParameter("asset", asset);
+            parameters.AddOptionalParameter("startTime", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.AddOptionalParameter("endTime", DateTimeConverter.ConvertToMilliseconds(endTime));
+            parameters.AddOptionalParameter("current", current?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("size", size?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("recvWindow",
+                receiveWindow?.ToString(CultureInfo.InvariantCulture) ??
+                _baseClient.ClientOptions.ReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
+
+            return await _baseClient.SendRequestInternal<RedemptionRecordList>(_baseClient.GetUrl(
+                    getFlexibleRedemptionRecordEndpoint, "sapi", "1"), HttpMethod.Get, ct, parameters, true)
+                .ConfigureAwait(false);
+        }
 
         #region Get Fixed And Customized Fixed Project List
         /// <inheritdoc />
@@ -303,6 +346,7 @@ namespace Binance.Net.Clients.GeneralApi
 
             return await _baseClient.SendRequestInternal<BinanceLendingChangeToDailyResult>(_baseClient.GetUrl(positionChangedEndpoint, "sapi", "1"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
+
         #endregion
     }
 }

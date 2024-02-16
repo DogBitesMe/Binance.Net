@@ -16,10 +16,67 @@ namespace Binance.Net.Interfaces.Clients.GeneralApi
         ALL
     }
 
+    public enum SourceAccountForRecord
+    {
+        SPOT,
+        FUND,
+        SPOTANDFUNDING   
+    }
+
+    public enum SourceAccountForRedemptionRecord
+    {
+        SPOT,
+        FUND,
+    }
+
+    public enum SubscriptionRecordStatus
+    {
+        PURCHASING,
+        SUCCESS,
+        FAILED
+    }
+
     public class RedeemProductResult
     {
         public string RedeemId { get; set; }
         public bool Success { get; set; }
+    }
+
+    public class SubscriptionRecord
+    {
+        public decimal Amount { get; set; }
+        public string Asset { get; set; }
+        public string Time { get; set; }
+        public int PurchaseId { get; set; }
+        public string Type { get; set; }
+        public SourceAccountForRecord sourceAccount { get; set; }
+        public decimal AmtFromSpot { get; set; }
+        public decimal AmtFromFunding { get; set; }
+        public SubscriptionRecordStatus Status { get; set; }
+    }
+
+    public class SubscriptionRecordList
+    {
+        public int Total { get; set; }
+        public List<SubscriptionRecord> Rows { get; set; } = new List<SubscriptionRecord>();
+    }
+
+    public class RedemptionRecord
+    {
+        public decimal Amount { get; set; }
+        public string Asset { get; set; }
+        public string Time { get; set; }
+        public string ProjectId { get; set; }
+        public int RedeemId { get; set; }
+        public string Type { get; set; }
+        public SourceAccountForRedemptionRecord destAccount { get; set; }
+        public string Status { get; set; }
+    }
+
+    public class RedemptionRecordList
+    {
+        public int Total { get; set; }
+        public List<RedemptionRecord> Rows { get; set; } = new List<RedemptionRecord>();
     }
 
     /// <summary>
@@ -55,6 +112,16 @@ namespace Binance.Net.Interfaces.Clients.GeneralApi
 
         Task<WebCallResult<BinanceSimpleEarnPurchaseResult>> SubscribeFlexibleProductAsync(string productId,
             decimal quantity, bool? autoSubscribe, SourceAccount? sourceAccount, long? receiveWindow = null, CancellationToken ct = default);
+
+
+        Task<WebCallResult<SubscriptionRecordList>> GetFlexibleSubscriptionRecordAsync(string? productId, 
+            string? purchaseId, string? asset, DateTime? startTime, DateTime? endTime, int? current, int? size, long? receiveWindow = null,
+            CancellationToken ct = default);
+
+        Task<WebCallResult<RedemptionRecordList>> GetFlexibleRedemptionRecordAsync(string? productId,
+            string? redeemId, string? asset, DateTime? startTime, DateTime? endTime, int? current, int? size,
+            long? receiveWindow = null,
+            CancellationToken ct = default);
 
         /// <summary>
         /// Get the redemption quota left for a product
