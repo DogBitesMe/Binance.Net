@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Binance.Net.Enums;
 using Binance.Net.Objects.Models.Spot.Lending;
 using Binance.Net.Objects.Models.Spot.Savings;
+using CryptoExchange.Net.Converters;
 using CryptoExchange.Net.Objects;
+using Newtonsoft.Json;
 
 namespace Binance.Net.Interfaces.Clients.GeneralApi
 {
@@ -46,9 +48,11 @@ namespace Binance.Net.Interfaces.Clients.GeneralApi
     {
         public decimal Amount { get; set; }
         public string Asset { get; set; }
-        public string Time { get; set; }
+
+        [JsonConverter(typeof(DateTimeConverter))]
+        public DateTime Time { get; set; }
         public int PurchaseId { get; set; }
-        public string Type { get; set; }
+        public string Type { get; set; } //AUTO for auto subscribe, NORMAL for normal subscription, CONVERT for Locked to Flexible, LOAN for flexible loan collateral, AI for Auto Invest subscribe, TRANSFER for Locked Savings to Flexible
         public SourceAccountForRecord sourceAccount { get; set; }
         public decimal AmtFromSpot { get; set; }
         public decimal AmtFromFunding { get; set; }
@@ -65,10 +69,11 @@ namespace Binance.Net.Interfaces.Clients.GeneralApi
     {
         public decimal Amount { get; set; }
         public string Asset { get; set; }
-        public string Time { get; set; }
+
+        [JsonConverter(typeof(DateTimeConverter))]
+        public DateTime Time { get; set; }
         public string ProjectId { get; set; }
         public int RedeemId { get; set; }
-        public string Type { get; set; }
         public SourceAccountForRedemptionRecord destAccount { get; set; }
         public string Status { get; set; }
     }
