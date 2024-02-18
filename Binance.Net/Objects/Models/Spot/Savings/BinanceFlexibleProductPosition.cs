@@ -15,7 +15,7 @@ namespace Binance.Net.Objects.Models.Spot.Lending
         public decimal TotalAmount { get; set; }
 
         public Dictionary<string, decimal> TierAnnualPercentageRate { get; set; } = new Dictionary<string, decimal>();
-        
+
         public decimal LatestAnnualPercentageRate { get; set; }
 
         public decimal YesterdayAirdropPercentageRate { get; set; }
@@ -39,11 +39,11 @@ namespace Binance.Net.Objects.Models.Spot.Lending
         /// </summary>
         public string ProductId { get; set; } = string.Empty;
 
-public decimal YesterdayRealTimeRewards { get; set; }
+        public decimal YesterdayRealTimeRewards { get; set; }
 
-public decimal CumulativeBonusRewards { get; set; }
-public decimal CumulativeRealTimeRewards { get; set; }
-public decimal CumulativeTotalRewards { get; set; }
+        public decimal CumulativeBonusRewards { get; set; }
+        public decimal CumulativeRealTimeRewards { get; set; }
+        public decimal CumulativeTotalRewards { get; set; }
         public bool AutoSubscribe { get; set; }
     }
 
