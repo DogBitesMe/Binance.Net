@@ -55,5 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\CryptoExchange.Net\CryptoExchange.Net\CryptoExchange.Net.csproj" />
+    <ProjectReference Include="..\..\LibBadDog\LibBadDog\LibBadDog.csproj" />
   </ItemGroup>
 </Project>

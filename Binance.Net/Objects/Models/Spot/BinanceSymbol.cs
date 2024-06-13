@@ -18,6 +18,7 @@ namespace Binance.Net.Objects.Models.Spot
         /// </summary>
         [JsonProperty("symbol")]
         public string Name { get; set; } = string.Empty;
+
         /// <summary>
         /// The status of the symbol
         /// </summary>

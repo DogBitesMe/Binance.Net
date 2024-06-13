@@ -56,8 +56,10 @@ namespace Binance.Net.Clients.GeneralApi
             parameters.AddOptionalParameter("current", page?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("size", pageSize?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("recvWindow", receiveWindow?.ToString(CultureInfo.InvariantCulture) ?? _baseClient.ClientOptions.ReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
-
-            return await _baseClient.SendRequestInternal<BinanceFlexibleProductList>(_baseClient.GetUrl(flexibleProductListEndpoint, "sapi", "1"), HttpMethod.Get, ct, parameters, true).ConfigureAwait(false);
+            //A.L($"[GetFlexibleProductListAsync]Before SendRequestInternal");
+            var ret = await _baseClient.SendRequestInternal<BinanceFlexibleProductList>(_baseClient.GetUrl(flexibleProductListEndpoint, "sapi", "1"), HttpMethod.Get, ct, parameters, true).ConfigureAwait(false);
+            //A.L($"[GetFlexibleProductListAsync]After SendRequestInternal:{ret.Success} rows:{ret.Data.Rows.Count}");
+            return ret;
         }
 
         #endregion
